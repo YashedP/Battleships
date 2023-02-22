@@ -1,6 +1,6 @@
 public class Player
 {
-    private static final int[] SHIP_LENGTHS = {2, 3, 3, 4, 5};
+    public static final int[] SHIP_LENGTHS = {2, 3, 3, 4, 5};
     
     private Grid playerGrid;
     private Grid playerGuesses;
@@ -12,12 +12,11 @@ public class Player
         shipCount = 0;
     }
     
-    public void chooseShipLocation(Ship s, int row, int col, int direction) {
-        if(shipCount < 5) {
-            s.setLocation(row, col);
-            s.setDirection(direction);
-            playerGrid.addShip(s);
-        }
+    public void chooseShipLocation(int row, int col, int direction) {
+        Ship newShip = new Ship(SHIP_LENGTHS[shipCount]);
+        newShip.setLocation(row, col);
+        newShip.setDirection(direction);
+        playerGrid.addShip(newShip);
         shipCount++;
     }
     
