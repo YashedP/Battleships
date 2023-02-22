@@ -20,6 +20,10 @@ public class Player
         shipCount++;
     }
     
+    public int getShipCount() {
+        return shipCount;
+    }
+    
     public void printMyShips() {
         playerGrid.printShips();
     }

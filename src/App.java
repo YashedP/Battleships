@@ -1,5 +1,13 @@
+import java.util.Scanner;
+
 public class App {
-    public static void main(String[] args) throws Exception {
-        // System.out.println("Hello, World!");
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+        System.out.println("Welcome to Battleships! What mode would you like to play?");
+        System.out.println("Mode 1: player vs. player");
+        System.out.println("Mode 2: player vs. computer");
+        int mode = input.nextInt();
+        
+        Battleship game = new Battleship(mode);
     }
 }

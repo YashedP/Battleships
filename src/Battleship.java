@@ -6,39 +6,79 @@ import java.util.Scanner;
 public class Battleship
 {
     private static Scanner input = new Scanner(System.in);
-    private static int row;
-    private static int col;
-    private static int direction;
-    private static Player user = new Player();
-    private static Player computer = new Player();
+    private Player player1;
+    private Player player2;
+
+    public Battleship(int mode) {
+        // setupUser(player1);
+        if(mode == 1) {
+            setupUser(player2);
+        }
+        else {
+            setupComputer(player2);
+        }
+        
+        // playGame();
+    }
     
-    public static void main(String[] args){
-        System.out.println("Welcome to Battleship!");
-        
-        
-        // randomize computer's ships
+    public void setupUser(Player player) {
+        player = new Player();
+        chooseShipLocation(player);
+    }
+    
+    public void setupComputer(Player computer) {
+        computer = new Player();
+        for(int i = 0; i < 5; i++) {
+            randomizeShipLocation(computer);
+        }
+        computer.printMyShips();
+    }
+    
+    private int row;
+    private int col;
+    private int direction;
+
+    public void chooseShipLocation(Player player) {
         System.out.println("We will begin by chossing the location of your ships!\n");
-        user.printMyShips();
+        player.printMyShips();
         for(int i = 0; i < 5; i++) {
             row = -1;
             col = -1;
             direction = -1;
             
             System.out.println("Ship #" + (i + 1) + " consists of " + Player.SHIP_LENGTHS[i] + " length");
-            askForShipLocation(Player.SHIP_LENGTHS[i]);
-            boolean check = false;
-            user.chooseShipLocation(row, col, direction);
-            user.printMyShips();
+            askForShipLocation(player, Player.SHIP_LENGTHS[i]);
+
+            player.chooseShipLocation(row, col, direction);
         }
-        
-        
     }
     
-    public static void askForGuess() {
-        System.out.println("Enter a valid row and column");
+    public void randomizeShipLocation(Player player) {
+        int length = Player.SHIP_LENGTHS[player.getShipCount()];
+        int direction = Randomizer.nextInt(2);
+        int row;
+        int col;
+        
+        // direction = 0 means horizontal
+        // direction = 1 means vertical
+        if(direction == 0) {
+            row = Randomizer.nextInt(10);
+            col = Randomizer.nextInt(11 - length);
+        }
+        else {
+            row = Randomizer.nextInt(11 - length);
+            col = Randomizer.nextInt(10);
+        }
+
+        if(!player.checkShipLocation(row, col, direction)) {
+            randomizeShipLocation(player);
+        }
+        else {
+            player.chooseShipLocation(row, col, direction);
+        }
     }
     
-    public static void askForShipLocation(int length) {
+    public void askForShipLocation(Player player, int length) {
         while(direction == -1) {
             System.out.println("What direction would you like to place your ship? horizontal or vertical? ");
             String dir = input.nextLine();
@@ -87,7 +127,7 @@ public class Battleship
             System.out.print("What column would you like to place your ship? Choose a column between 1-");
 
             if(direction == 0) {
-                System.out.println(10 - length + 1);
+                System.out.println(11 - length);
             }
             else {
                 System.out.println("10");
@@ -112,13 +152,17 @@ public class Battleship
             }
         }
         
-        if(!user.checkShipLocation(row, col, direction)) {
+        if(!player.checkShipLocation(row, col, direction)) {
             row = -1;
             col = -1;
             direction = -1;
             
             System.out.println("Invalid placement, retry again\n");
-            askForShipLocation(length);
+            askForShipLocation(player, length);
         }
     }
+    
+    // public static void askForGuess() {
+    //     System.out.println("Enter a valid row and column");
+    // }
 }
