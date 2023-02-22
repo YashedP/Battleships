@@ -2,13 +2,14 @@ public class Player
 {
     public static final int[] SHIP_LENGTHS = {2, 3, 3, 4, 5};
     
+    private String name;
     private Grid playerGrid;
-    private Grid playerGuesses;
     private int shipCount;
+    public int shipsRemaining = 17;
+    
     
     public Player() {
         playerGrid = new Grid();
-        playerGuesses = new Grid();
         shipCount = 0;
     }
     
@@ -18,6 +19,14 @@ public class Player
         newShip.setDirection(direction);
         playerGrid.addShip(newShip);
         shipCount++;
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
     }
     
     public int getShipCount() {
@@ -32,19 +41,18 @@ public class Player
         playerGrid.printStatus();
     }
     
-    public void printMyGuesses() {
-        playerGuesses.printStatus();
-    }
-    
     public boolean recordOpponentGuess(int row, int col) {
         if(playerGrid.alreadyGuessed(row, col)) { 
             return false;
         }
         if(playerGrid.hasShip(row, col)) {
             playerGrid.markHit(row, col);
+            System.out.println("hit a ship!");
+            shipsRemaining--;
         }
         else {
             playerGrid.markMiss(row, col);
+            System.out.println("missed!");
         }
         return true;
     }

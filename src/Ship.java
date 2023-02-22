@@ -56,10 +56,10 @@ public class Ship
     }
     
     private String directionToString() {
-        if(direction == 0) {
+        if(direction == HORIZONTAL) {
             return "horizontal";
         }
-        else if(direction == 1) {
+        else if(direction == VERTICAL) {
             return "vertical";
         }
         return "unset direction";

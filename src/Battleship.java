@@ -1,37 +1,220 @@
-// Add randomizing the computer's ship placements
-// adding that I can use a uppercase or lowercase of vertical, horizontal, A - J
+// Advance the AI so that if it hit's a ship then it tries going the squares around the ship
+// Idea: switch the next move after hitting a ship, row-1, row+1, column-1, column+1 and switch
+// Idea: to make turns more efficient, have a player method take the other player as a paramter and use that to record the guess, refer to pikachu pokemon attack methd
 
 import java.util.Scanner;
+import java.util.Random;
 
 public class Battleship
 {
-    private static Scanner input = new Scanner(System.in);
+    private int mode;
     private Player player1;
     private Player player2;
-
+    private int rowGuess;
+    private int colGuess;
+    private int[][][] computerQueue;
+    
     public Battleship(int mode) {
-        // setupUser(player1);
+        this.mode = mode;
+        
         if(mode == 1) {
-            setupUser(player2);
-        }
-        else {
-            setupComputer(player2);
+            System.out.println("Player 1");
         }
         
-        // playGame();
+        player1 = setupUser(player1);
+        if(mode == 1) {
+            System.out.println("Player 2");
+            player2 = setupUser(player2);
+        }
+        else {
+            player2 = setupComputer(player2);
+        }
+        
+        playGame();
+        
+        System.out.println();
+        if(mode == 1) {
+            if(player1.shipsRemaining == 0) {
+                System.out.println("Congratulations!! Player 1 won!!");
+            }
+            else {
+                System.out.println("Congratulations!! Player 2 wons!!");
+            }
+        }
+        else {
+            if(player2.shipsRemaining == 0) {
+                System.out.println("Congratulations!! You won!!");
+            }
+            else {
+                System.out.println("You lost the game :/");
+            }
+        }
     }
     
-    public void setupUser(Player player) {
+    public Player setupUser(Player player) {
         player = new Player();
+        
+        if(mode == 1) {
+            System.out.println("Enter your name");
+            String name = App.input.nextLine();
+            player.setName(name);
+        }
+        
         chooseShipLocation(player);
+        clearConsole();
+        
+        return player;
     }
     
-    public void setupComputer(Player computer) {
+    public Player setupComputer(Player computer) {
         computer = new Player();
         for(int i = 0; i < 5; i++) {
             randomizeShipLocation(computer);
         }
-        computer.printMyShips();
+        
+        computerQueue = new int[10][10][2];
+        
+        for(int i = 0; i < computerQueue.length; i++) {
+            for(int j = 0; j < computerQueue[i].length; j++) {
+                computerQueue[i][j][0] = i;
+                computerQueue[i][j][1] = j;
+            }
+        }
+
+        // System.out.println("Computer queue on the grid before shuffle");
+        // for(int i = 0;i < computerQueue.length; i++) {
+        //     for(int j = 0; j < computerQueue[i].length; j++) {
+        //         System.out.print("{" + computerQueue[i][j][0] + ", " + computerQueue[i][j][1] + "}, ");
+        //     }
+        //     System.out.println();
+        // }
+        
+        shuffle(computerQueue);
+        
+        // System.out.println("\n\nComputer queue on the grid after shuffle");
+        // for(int i = 0;i < computerQueue.length; i++) {
+        //     for(int j = 0; j < computerQueue[i].length; j++) {
+        //         System.out.print("{" + computerQueue[i][j][0] + ", " + computerQueue[i][j][1] + "}, ");
+        //     }
+        //     System.out.println();
+        // }
+
+        return computer;
+    }
+    
+    public void playGame() {
+        System.out.println("Now let's play the game!\n");
+
+        int i = 0;
+        int j = 0;
+
+        boolean win = false;
+        while(!win) {
+            if(mode == 2) {
+                System.out.print("It is your turn");
+            } 
+            else {
+                System.out.print("It is " + player1.getName() + "'s turn");
+            }
+            System.out.println(", press enter when ready.");
+            App.input.nextLine();
+            
+            player2.printOpponentGuesses();
+            
+            boolean guess = false;
+            while(!guess) {
+                recordGuess();
+                System.out.print("\nYou ");
+                if(player2.recordOpponentGuess(rowGuess, colGuess)) {
+                    guess = true;
+                }
+                else {
+                    System.out.println("Invalid guess, try again");
+                }
+            }
+            player2.printOpponentGuesses();
+
+            if(mode == 2) {
+                System.out.println("It is the computer's turn, press enter when ready");
+                App.input.nextLine();
+                player1.printOpponentGuesses();
+                
+                System.out.println("Press enter to let the computer guess");
+                App.input.nextLine();
+                System.out.print("The computer ");
+                player1.recordOpponentGuess(computerQueue[i][j][0], computerQueue[i][j][1]);
+                
+                j++;
+                if(j == 10) {
+                    i++;
+                    j = 0;
+                }
+                
+                player1.printOpponentGuesses();
+            }
+            else {
+                System.out.print("It is " + player2.getName() + "'s turn");
+                System.out.println(", press enter when ready.");
+                App.input.nextLine();
+                
+                player1.printOpponentGuesses();
+                
+                guess = false;
+                while(!guess) {
+                    recordGuess();
+                    System.out.print("\nYou ");
+                    if(player1.recordOpponentGuess(rowGuess, colGuess)) {
+                        guess = true;
+                    }
+                    else {
+                        System.out.println("Invalid guess, try again");
+                    }
+                }
+                player1.printOpponentGuesses();
+            }
+            
+            if(player1.shipsRemaining == 0 || player2.shipsRemaining == 0) {
+                win = true;
+            }
+        }
+    }
+
+    public void recordGuess() {
+        rowGuess = -1;
+        while(rowGuess == -1) {
+            System.out.println("What row would you like to place your guess? Choose a row between A-J");
+            char charRow;
+            charRow = App.input.nextLine().toUpperCase().charAt(0);
+            rowGuess = ((int)charRow) - 65;
+            
+            boolean check = true;
+            if(rowGuess < 0 || rowGuess > 9) {
+                check = false;
+            }
+
+            if(!check) {
+                System.out.println("Your answer was not understandable, can you repeat yourself?");
+                rowGuess = -1;
+            }
+        }
+
+        colGuess = -1;
+        while(colGuess == -1) {
+            System.out.println("What column would you like to place your guess? Choose a row between 1-10");
+            colGuess = App.input.nextInt();
+            colGuess -= 1;
+            
+            boolean check = true;
+            if(colGuess < 0 || colGuess > 9) {
+                check = false;
+            }
+
+            if(!check) {
+                System.out.println("Your answer was not understandable, can you repeat yourself?");
+                colGuess = -1;
+            }
+        }
+        App.input.nextLine();
     }
     
     private int row;
@@ -39,7 +222,7 @@ public class Battleship
     private int direction;
 
     public void chooseShipLocation(Player player) {
-        System.out.println("We will begin by chossing the location of your ships!\n");
+        System.out.println("\nWe will begin by chossing the location of your ships!\n");
         player.printMyShips();
         for(int i = 0; i < 5; i++) {
             row = -1;
@@ -50,6 +233,7 @@ public class Battleship
             askForShipLocation(player, Player.SHIP_LENGTHS[i]);
 
             player.chooseShipLocation(row, col, direction);
+            player.printMyShips();
         }
     }
     
@@ -59,8 +243,6 @@ public class Battleship
         int row;
         int col;
         
-        // direction = 0 means horizontal
-        // direction = 1 means vertical
         if(direction == 0) {
             row = Randomizer.nextInt(10);
             col = Randomizer.nextInt(11 - length);
@@ -81,11 +263,11 @@ public class Battleship
     public void askForShipLocation(Player player, int length) {
         while(direction == -1) {
             System.out.println("What direction would you like to place your ship? horizontal or vertical? ");
-            String dir = input.nextLine();
-            if(dir.equals("horizontal")) {
+            String dir = App.input.nextLine().toLowerCase();
+            if(dir.equals("horizontal") || dir.equals("h")) {
                 direction = 0;
             }
-            else if(dir.equals("vertical")) {
+            else if(dir.equals("vertical") || dir.equals("v")) {
                 direction = 1;
             }
             else {
@@ -103,7 +285,7 @@ public class Battleship
             else {
                 System.out.println("J");
             }
-            charRow = input.nextLine().charAt(0);
+            charRow = App.input.nextLine().toUpperCase().charAt(0);
             row = ((int)charRow) - 65;
             
             boolean check = true;
@@ -132,8 +314,8 @@ public class Battleship
             else {
                 System.out.println("10");
             }
-            col = input.nextInt() - 1;
-            input.nextLine();
+            col = App.input.nextInt() - 1;
+            App.input.nextLine();
             
             boolean check = true;
             if(col < 0) {
@@ -162,7 +344,22 @@ public class Battleship
         }
     }
     
-    // public static void askForGuess() {
-    //     System.out.println("Enter a valid row and column");
-    // }
+    public static void shuffle(int[][][] array) {
+        for(int i = 0; i < array.length; i++) {
+            for(int j = 0; j < array[i].length; j++) {
+                int m = (int)(Math.random() * (i + 1));
+                int n = (int)(Math.random() * (j + 1));
+                
+                int[] temp = array[m][n];
+                array[m][n] = array[i][j];
+                array[i][j] = temp;
+            }
+        }
+    }
+    
+    public static void clearConsole() {
+        for(int i = 0; i < 60; i++) {
+            System.out.println();
+        }
+    }
 }
