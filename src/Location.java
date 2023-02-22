@@ -9,6 +9,7 @@ public class Location
     
     public Location() {
         status = UNGUESSED;
+        val = false;
     }
     
     public boolean checkHit() {

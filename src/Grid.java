@@ -99,12 +99,12 @@ public class Grid
     }
     
     public void addShip(Ship s) {
-        if(s.getDirection() == 0) {
+        if(s.getDirection() == Ship.HORIZONTAL) {
             for(int i = 0; i < s.getLength(); i++) {
                 setShip(s.getRow(), s.getCol() + i, true);
             }
         }
-        else if(s.getDirection() == 1) {
+        else if(s.getDirection() == Ship.VERTICAL) {
             for(int i = 0; i < s.getLength(); i++) {
                 setShip(s.getRow() + i, s.getCol(), true);
             }
