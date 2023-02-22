@@ -2,9 +2,6 @@
 // Idea: switch the next move after hitting a ship, row-1, row+1, column-1, column+1 and switch
 // Idea: to make turns more efficient, have a player method take the other player as a paramter and use that to record the guess, refer to pikachu pokemon attack methd
 
-import java.util.Scanner;
-import java.util.Random;
-
 public class Battleship
 {
     private int mode;

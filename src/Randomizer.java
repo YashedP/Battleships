@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class Randomizer{
+public class Randomizer {
 
 	public static Random theInstance = null;
 	
