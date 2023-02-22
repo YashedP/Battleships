@@ -44,4 +44,11 @@ public class Player
         }
         return true;
     }
+    
+    public boolean checkShipLocation(int row, int col, int direction) {
+        Ship newShip = new Ship(SHIP_LENGTHS[shipCount]);
+        newShip.setLocation(row, col);
+        newShip.setDirection(direction);
+        return playerGrid.checkShipLocation(newShip);
+    }
 }

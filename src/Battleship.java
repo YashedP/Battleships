@@ -1,5 +1,5 @@
-// Fix bug that allows users to place the ship on top of another ship
 // Add randomizing the computer's ship placements
+// adding that I can use a uppercase or lowercase of vertical, horizontal, A - J
 
 import java.util.Scanner;
 
@@ -9,13 +9,12 @@ public class Battleship
     private static int row;
     private static int col;
     private static int direction;
+    private static Player user = new Player();
+    private static Player computer = new Player();
     
     public static void main(String[] args){
-        
         System.out.println("Welcome to Battleship!");
         
-        Player user = new Player();
-        Player computer = new Player();
         
         // randomize computer's ships
         System.out.println("We will begin by chossing the location of your ships!\n");
@@ -27,9 +26,12 @@ public class Battleship
             
             System.out.println("Ship #" + (i + 1) + " consists of " + Player.SHIP_LENGTHS[i] + " length");
             askForShipLocation(Player.SHIP_LENGTHS[i]);
+            boolean check = false;
             user.chooseShipLocation(row, col, direction);
             user.printMyShips();
         }
+        
+        
     }
     
     public static void askForGuess() {
@@ -108,6 +110,15 @@ public class Battleship
                 System.out.println("Your answer was not understandable, can you repeat yourself?");
                 col = -1;
             }
+        }
+        
+        if(!user.checkShipLocation(row, col, direction)) {
+            row = -1;
+            col = -1;
+            direction = -1;
+            
+            System.out.println("Invalid placement, retry again\n");
+            askForShipLocation(length);
         }
     }
 }

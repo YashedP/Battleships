@@ -98,29 +98,32 @@ public class Grid
         }
     }
     
-    public boolean addShip(Ship s) {
+    public void addShip(Ship s) {
         if(s.getDirection() == Ship.HORIZONTAL) {
-            // Checks if all the spots doesn't have a ship already
-            for(int i = 0; i < s.getLength(); i++) {
-                if(hasShip(s.getRow(), s.getCol() + i)) {
-                    return false;
-                }
-            }
-            
             for(int i = 0; i < s.getLength(); i++) {
                 setShip(s.getRow(), s.getCol() + i, true);
             }
         }
         else if(s.getDirection() == Ship.VERTICAL) {
-            // Checks if all the spots doesn't have a ship already
+            for(int i = 0; i < s.getLength(); i++) {
+                setShip(s.getRow() + i, s.getCol(), true);
+            }
+        }
+    }
+    
+    public boolean checkShipLocation(Ship s) {
+        if(s.getDirection() == Ship.HORIZONTAL) {
+            for(int i = 0; i < s.getLength(); i++) {
+                if(hasShip(s.getRow(), s.getCol() + i)) {
+                    return false;
+                }
+            }
+        }
+        else if (s.getDirection() == Ship.VERTICAL) {
             for(int i = 0; i < s.getLength(); i++) {
                 if(hasShip(s.getRow() + i, s.getCol())) {
                     return false;
                 }
-            }
-            
-            for(int i = 0; i < s.getLength(); i++) {
-                setShip(s.getRow() + i, s.getCol(), true);
             }
         }
         return true;
