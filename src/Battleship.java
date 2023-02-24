@@ -69,7 +69,6 @@ public class Battleship
             randomizeShipLocation(computer);
         }
         
-        computerQueue = new int[10][10][2];
         
         for(int i = 0; i < computerQueue.length; i++) {
             for(int j = 0; j < computerQueue[i].length; j++) {
@@ -78,24 +77,8 @@ public class Battleship
             }
         }
 
-        // System.out.println("Computer queue on the grid before shuffle");
-        // for(int i = 0;i < computerQueue.length; i++) {
-        //     for(int j = 0; j < computerQueue[i].length; j++) {
-        //         System.out.print("{" + computerQueue[i][j][0] + ", " + computerQueue[i][j][1] + "}, ");
-        //     }
-        //     System.out.println();
-        // }
-        
         shuffle(computerQueue);
         
-        // System.out.println("\n\nComputer queue on the grid after shuffle");
-        // for(int i = 0;i < computerQueue.length; i++) {
-        //     for(int j = 0; j < computerQueue[i].length; j++) {
-        //         System.out.print("{" + computerQueue[i][j][0] + ", " + computerQueue[i][j][1] + "}, ");
-        //     }
-        //     System.out.println();
-        // }
-
         return computer;
     }
     
@@ -344,9 +327,9 @@ public class Battleship
     public static void shuffle(int[][][] array) {
         for(int i = 0; i < array.length; i++) {
             for(int j = 0; j < array[i].length; j++) {
-                int m = (int)(Math.random() * (i + 1));
-                int n = (int)(Math.random() * (j + 1));
-                
+                int m = (int)(Math.random() * (10));
+                int n = (int)(Math.random() * (10));
+
                 int[] temp = array[m][n];
                 array[m][n] = array[i][j];
                 array[i][j] = temp;
