@@ -1,3 +1,5 @@
+import java.util.InputMismatchException;
+
 // Advance the AI so that if it hit's a ship then it tries going the squares around the ship
 // Idea: switch the next move after hitting a ship, row-1, row+1, column-1, column+1 and switch
 // Idea: to make turns more efficient, have a player method take the other player as a paramter and use that to record the guess, refer to pikachu pokemon attack methd
@@ -32,18 +34,26 @@ public class Battleship
         System.out.println();
         if(mode == 1) {
             if(player1.shipsRemaining == 0) {
-                System.out.println("Congratulations!! Player 1 won!!");
+                System.out.println("Congratulations!! " + player1.getName() + " won!!");
+                System.out.println(player2.getName() + "'s ships");
+                player2.printMyShips();
             }
             else {
-                System.out.println("Congratulations!! Player 2 wons!!");
+                System.out.println("Congratulations!! " + player2.getName() + " won!!");
+                System.out.println(player1.getName() + "'s ships");
+                player1.printMyShips();
             }
         }
         else {
             if(player2.shipsRemaining == 0) {
                 System.out.println("Congratulations!! You won!!");
+                System.out.println("Your ships");
+                player1.printMyShips();
             }
             else {
                 System.out.println("You lost the game :/");
+                System.out.println("Your opponent's ships");
+                player2.printMyShips();
             }
         }
     }
@@ -182,17 +192,22 @@ public class Battleship
         colGuess = -1;
         while(colGuess == -1) {
             System.out.println("What column would you like to place your guess? Choose a row between 1-10");
-            colGuess = App.input.nextInt();
-            colGuess -= 1;
-            
-            boolean check = true;
-            if(colGuess < 0 || colGuess > 9) {
-                check = false;
-            }
+            try {
+                colGuess = App.input.nextInt();
+                colGuess -= 1;
 
-            if(!check) {
-                System.out.println("Your answer was not understandable, can you repeat yourself?");
-                colGuess = -1;
+                boolean check = true;
+                if(colGuess < 0 || colGuess > 9) {
+                    check = false;
+                }
+    
+                if(!check) {
+                    System.out.println("Your answer was not understandable, can you repeat yourself?");
+                    colGuess = -1;
+                }    
+            }
+            catch(InputMismatchException e) {
+                System.out.println("Please enter a valid number!");
             }
         }
         App.input.nextLine();
