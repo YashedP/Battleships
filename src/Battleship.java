@@ -69,7 +69,8 @@ public class Battleship
             randomizeShipLocation(computer);
         }
         
-        
+        computerQueue = new int[10][10][2];
+
         for(int i = 0; i < computerQueue.length; i++) {
             for(int j = 0; j < computerQueue[i].length; j++) {
                 computerQueue[i][j][0] = i;
